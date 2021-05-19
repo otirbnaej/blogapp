@@ -114,6 +114,15 @@ router.get('/categorias/edit/:id', (req, res) => {
 
 });
 
+// postagens
+
+router.get('/postagens', (req, res) => {
+    res.render("admin/postagens");
+})
+
+router.get('/postagens/add', (req, res) => {
+    res.render('admin/addpostagem');
+})
 
 
 module.exports = router;

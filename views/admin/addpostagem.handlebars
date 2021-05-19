@@ -1,0 +1,27 @@
+
+{{#if postagem}}
+    <h3>Editar postagem</h3>
+{{else}}
+    <h3>Nova postagem</h3>
+{{/if}}
+<div class="card">
+    <div class="card-body">
+        <form action="/admin/postagems/nova" method="POST">
+            <input type="hidden" name="id" value="{{postagem._id}}">
+            <label for="titulo">Título: </label>
+            <input type="text" id="titulo" name="titulo" placeholder="Título" class="form-control mt-2" {{#if postagem.titulo}} value="{{postagem.titulo}}" {{/if}}>
+            <label class="mt-4" for="slug">Slug: </label>
+            <input type="text" id="slug" name="slug" placeholder="Slug" class="form-control mt-2" {{#if postagem.slug}} value="{{postagem.slug}}" {{/if}}>
+            <label class="mt-4" for="conteudo">Título: </label>
+            <input type="text" id="conteudo" name="conteudo" placeholder="Adicione sua publicação aqui..." class="form-control mt-2" {{#if postagem.conteudo}} value="{{postagem.conteudo}}" {{/if}}>
+           
+            {{#each erros}}
+            <div class="alert alert-danger mt-4">{{texto}}</div>
+
+            {{/each}}
+
+
+            <button type="submit" class="btn btn-outline-success mt-4">Criar postagem</button>
+        </form>
+    </div>
+</div>
