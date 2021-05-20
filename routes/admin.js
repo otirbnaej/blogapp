@@ -22,7 +22,7 @@ router.get('/categorias', (req, res) => {
             res.render('admin/categorias', {
                 categorias
             });
-        }).catch(e => {
+        }).catch(() => {
             req.flash('error_msg', 'Houve um erro ao listar as categorias.')
             res.redirect('/admin');
         });
@@ -98,7 +98,7 @@ router.post('/categorias/deletar', (req, res) => {
         .then(() => {
             req.flash('success_msg', 'Categoria deletada com sucesso!');
             res.redirect('/admin/categorias');
-        }).catch((err) => {
+        }).catch(() => {
             req.flash('error_msg', 'Houve um erro ao deletar a categoria');
             res.redirect('/admin/categorias');
         });
@@ -125,7 +125,17 @@ router.get('/categorias/edit/:id', (req, res) => {
 // postagens
 
 router.get('/postagens', (req, res) => {
-    res.render('admin/postagens');
+    Postagem.find().populate('categoria').sort({
+            date: 'desc'
+        }).lean()
+        .then((postagens) => {
+            res.render('admin/postagens', {
+                postagens
+            });
+        }).catch(() => {
+            req.flash('error_msg', 'Houve um erro ao listar as postagens.')
+            res.redirect('/admin');
+        });
 })
 
 router.get('/postagens/add', (req, res) => {
@@ -134,7 +144,7 @@ router.get('/postagens/add', (req, res) => {
             res.render('admin/addpostagem', {
                 categorias
             });
-        }).catch((e) => {
+        }).catch(() => {
             req.flash('error_msg', 'Houve um erro ao carregar o formulário');
             req.redirect('/admin');
         });
@@ -161,25 +171,40 @@ router.post('/postagens/nova', (req, res) => {
         });
     }
 
-    if (erros.length > 0) {
-        Categoria.find().lean()
-        .then((categorias) => {
-            res.render('admin/addpostagem', {
-                categorias, erros
-            });
-        }).catch(() => {
-            req.flash('error_msg', 'Houve um erro ao carregar o formulário');
-            req.redirect('/admin');
+    if (!req.body.conteudo) {
+        erros.push({
+            texto: 'Insira um conteúdo para sua publicação.'
         });
     }
-    else {
+
+    if (req.body.categoria == "0") {
+        erros.push({
+            texto: 'Categoria inválida. Registre uma categoria.'
+        });
+    }
+
+    if (erros.length > 0) {
+        Categoria.find().lean()
+            .then((categorias) => {
+                res.render('admin/addpostagem', {
+                    categorias,
+                    erros
+                });
+            }).catch(() => {
+                req.flash('error_msg', 'Houve um erro ao carregar o formulário');
+                req.redirect('/admin');
+            });
+    } else {
         if (req.body.id) { // Se houver um id, o item deve ser editado.
             Postagem.findOne({
                     _id: req.body.id
                 })
                 .then((postagem) => {
-                    postagem.nome = req.body.nome;
+                    postagem.titulo = req.body.titulo;
                     postagem.slug = req.body.slug;
+                    postagem.descricao = req.body.descricao;
+                    postagem.conteudo = req.body.conteudo;
+                    postagem.categoria = req.body.categoria;
 
                     postagem.save().then(() => {
                         req.flash('success_msg', 'Postagem editada com sucesso');
@@ -209,11 +234,35 @@ router.post('/postagens/nova', (req, res) => {
                 })
                 .catch(() => {
                     req.flash('error_msg', 'Houve um erro ao salvar a postagem. Tente novamente.');
-                    res.redirect('/admin');
+                    res.redirect('/admin/postagens');
                 });
         }
     };
 });
 
+router.get('/postagens/edit/:id', (req, res) => {
+    const {
+        id
+    } = req.params;
+    
+    Postagem.findOne({
+            _id: id
+        }).lean()
+        .then((postagem) => {
+            Categoria.find().lean()
+                .then((categorias) => {
+                    res.render('admin/addpostagem', {
+                        postagem,
+                        categorias
+                    });
+                }).catch(() => {
+                    req.flash('error_msg', 'Houve um erro ao listar as categorias.');
+                    res.redirect('/admin/postagens')
+                })
+        }).catch(() => {
+            req.flash('error_msg', 'Esta postagem não existe.');
+            res.redirect('/admin/postagens');
+        });
+});
 
 module.exports = router;

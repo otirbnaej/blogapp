@@ -4,18 +4,24 @@
 {{#each postagens}}
 <div class="card mt-4">
     <div class="card-body">
-        <h4>{{nome}}</h4>
+        <h4>{{titulo}}</h4>
         <div class="justify-content-between">
             <small class="d-block">{{slug}}</small>
-            <small class="d-block">Data de criação: {{date}}</small>
-
+            <small class="d-block">Data de criação: {{data}}</small>
+            <small class="mt-2">{{descricao}}</small>
+            <div class="mt-2">{{conteudo}}</div>
+            <small class="mt-2">Categoria: {{categoria.nome}}</small>
+            
+            
             <div class="d-flex mt-2">
                 <a href="/admin/postagens/edit/{{_id}}"><button class="btn btn-success me-2">Editar</button></a>
+                
                 <form action="/admin/postagens/deletar" method="POST">
                     <input type="hidden" name="id" value="{{_id}}">
                     <button type="submit" class="btn btn-danger">Deletar</button>
                 </form>
             </div>
+        
         </div>
 
     </div>
