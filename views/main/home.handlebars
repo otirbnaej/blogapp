@@ -1,12 +1,25 @@
-<div class="jumbotron">
+<div class="jumbotron" align="center">
     <h1 class="display-4">Meu Blog</h1>
     <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to
         featured content or information.</p>
     <hr class="my-4">
     <p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
     <p class="lead">
-        <a class="btn btn-primary btn-lg" href="#" role="button">Registrar</a>
+        <a class="btn btn-success btn" href="#" role="button">Registrar</a>
     </p>
 </div>
 
-<h3>Minhas postagens:</h3>
+<h3 class="mt-4">Minhas postagens:</h3>
+
+{{#each postagens}}
+<div class="card mt-4">
+    <div class="card-body">
+        <h3>{{titulo}}</h3>
+        <p>{{descricao}}</p>
+        <p>{{conteudo}}</p>
+    </div>
+</div>
+
+{{else}}
+    <h5>Nenhuma postagem registrada.</h5>
+{{/each}}
