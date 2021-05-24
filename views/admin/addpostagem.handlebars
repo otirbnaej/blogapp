@@ -41,13 +41,16 @@
             </select>
 
             {{#each erros}}
-            <div class="alert alert-danger mt-4">{{texto}}</div>
-
+                <div class="alert alert-danger mt-4">{{texto}}</div>
             {{/each}}
-
-            <div>
+            
+            {{#if postagem}}
+                <button type="submit" class="btn btn-outline-success mt-4">Atualizar postagem</button>
+            {{else}}
                 <button type="submit" class="btn btn-outline-success mt-4">Criar postagem</button>
-            </div>
+            {{/if}}
+
+
         </form>
     </div>
 </div>
