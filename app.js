@@ -1,13 +1,17 @@
 const express = require('express');
 const handlebars = require('express-handlebars');
 const bodyParser = require('body-parser');
+
 const admin = require('./routes/admin');
 const main = require('./routes/main');
+const usuarios = require('./routes/usuario');
+
 const path = require('path');
 const mongoose = require('mongoose');
 const app = express();
 const session = require('express-session');
 const flash = require('connect-flash');
+
 require('./models/Categoria');
 const Categoria = mongoose.model('categorias');
 
@@ -62,6 +66,8 @@ app.use(express.static(path.join(__dirname, "public")));
 // Rotas
 app.use('/', main);
 app.use('/admin', admin);
+app.use('/usuarios', usuarios);
+
 
 const PORT = 8081;
 app.listen(PORT, () => {
